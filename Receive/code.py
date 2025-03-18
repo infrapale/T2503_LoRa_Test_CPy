@@ -17,7 +17,7 @@ pixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
 pixel.brightness = 0.3
 
 # Define radio parameters.
-RADIO_FREQ_MHZ =433.0  # Frequency of the radio in Mhz. Must match your
+RADIO_FREQ_MHZ =868.0  # Frequency of the radio in Mhz. Must match your
 # module! Can be a value like 915.0, 433.0, etc.
 
 # Define pins connected to the chip.
