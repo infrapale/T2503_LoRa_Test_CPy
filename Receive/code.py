@@ -62,20 +62,29 @@ while True:
         str = "{0} {1} \n".format("Received (raw payload):", packet[4:])
         uart.write(str)
         print(str)
-        str = "Received RSSI: {0} \n".format(rfm9x.last_rssi)
-        uart.write(str)
-        print(str)
-        # send reading after any packet received
-        counter = counter + 1
-        # after 10 messages send a response to destination_node from my_node with ID = counter&0xff
-        if counter % 10 == 0:
+        str2 = packet[4:].decode()
+        print(str2,str2[1])
+        lst = str2.split(',')
+        print(lst)
+        if lst[0] == '<' and lst[7] == '>':
+            print("message is OK")
+            resp = {'radio':lst[2],'power':lst[4],'msg_nbr': lst[6], 'rssi': rfm9x.last_rssi}
+            print(resp)
+            reply_str = '(,R,{},P,{},#,{},S,{},)'.format(resp['radio'],resp['power'],resp['msg_nbr'],resp['rssi'])
+            print(reply_str)
+            uart.write(str)
+            counter = counter + 1
+ 
             pixel.fill((255, 128, 0))
             time.sleep(0.5)  # brief delay before responding
-            rfm9x.identifier = counter & 0xFF
-            rfm9x.send(
-                bytes(
-                    "message number {} from node {} ".format(counter, rfm9x.node),
-                    "UTF-8",
-                ),
-                keep_listening=True,
-            )
+            rfm9x.identifier = counter & 0xFF       
+            rfm9x.send(bytes(reply_str,'UTF-8'),keep_listening=True)       
+         
+        
+        #    bytes(
+        #        "message number {} from node {} ".format(counter, rfm9x.node),
+        #        "".format(),
+        #        "UTF-8",
+        #    ),
+        #    keep_listening=True,
+        #)
